@@ -5,9 +5,11 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"hiris/app/models"
-	"time"
 	//"time"
 )
+
+var users []models.User
+var user models.User
 
 func init() {
 
@@ -22,10 +24,10 @@ func main() {
 	//db.AutoMigrate(&models.User{})
 
 	//insert
-	user := models.User{Name: "曹丕", Age: 30, Birthday: time.Now()}
-	fmt.Println(db.NewRecord(user))
-	db.Create(&user)
-	fmt.Println(db.NewRecord(user))
+	//user := models.User{Name: "司马昭", Age: 35, Birthday: time.Now()}
+	//fmt.Println(db.NewRecord(user))
+	//db.Create(&user)
+	//fmt.Println(db.NewRecord(user))
 
 	//user := models.User{}
 	//db.First(&user)
@@ -33,10 +35,23 @@ func main() {
 	//fmt.Println(user)
 
 	//users 是 切片 类型是models.User
-	//var users []models.User
 	//db.Find(&users)
 	//fmt.Println(users)
 	//fmt.Println(users[1].CreatedAt)
+
+	//按主键获取
+	db.First(&user, 10)
+
+	//简单sql
+	db.Find(&user, "name = ?", "孔明")
+	db.Find(&users, "name <> ? AND age > ?", "黄忠", 55)
+
+	//Struct
+	db.Find(&users, models.User{Age: 55})
+	db.Find(&users, map[string]interface{}{"age": 60})
+
+	fmt.Println(user)
+	fmt.Println(users)
 
 	defer db.Close()
 }
