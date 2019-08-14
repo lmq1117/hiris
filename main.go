@@ -33,7 +33,34 @@ func main() {
 		ctx.JSON(doe)
 	})
 
+	userRoute := app.Party("/user", logThisMiddleware)
+
+	//花括号 跟 上边这句 没啥关系
+	{
+		userRoute.Get("/{id:int min(1)}", getUserByID)
+		userRoute.Get("/{name:string}/{city:string}", getUserByName)
+	}
+
 	//Run
 	app.Run(iris.Addr(":8080"), iris.WithCharset("UTF-8"))
 
+}
+
+func logThisMiddleware(ctx iris.Context) {
+	ctx.Application().Logger().Infof("====Path:%s | IP: %s====", ctx.Path(), ctx.RemoteAddr()) //格式化LOG
+	ctx.Next()
+}
+
+func getUserByID(ctx iris.Context) {
+	userId := ctx.Params().Get("id")
+	user := User{Username: "username" + userId}
+	ctx.XML(user)
+}
+
+func getUserByName(ctx iris.Context) {
+	name := ctx.Params().Get("name")
+	city := ctx.Params().Get("city")
+	//age := ctx.Params().Values().GetInt("age")
+	user := User{Username: name, City: city}
+	ctx.JSON(user)
 }
