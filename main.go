@@ -1,41 +1,42 @@
 package main
 
 import (
-	"flag"
-	"github.com/mlogclub/simple"
-	"github.com/sirupsen/logrus"
-	"hiris/utils/config"
+	"fmt"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"hiris/app/models"
+	"time"
+	//"time"
 )
 
-var configFile = flag.String("config", ".conf.yaml", "配置文件路径")
-
 func init() {
-	flag.Parse()
 
 }
 func main() {
-	config.InitConfig(*configFile) //初始化配置
-	//initLogrus()//初始化日志
-	//initDB()//初始化数据库
-}
-
-func initDB() {
-	simple.OpenDB(&simple.DBConfiguration{
-		Dialect:        "mysql",
-		Url:            config.Conf.MySqlUrl,
-		MaxIdle:        5,
-		MaxActive:      20,
-		EnableLogModel: config.Conf.ShowSql,
-		Models:         nil, //todo
-	})
-}
-
-func initLogrus() {
-	output, err := simple.NewLogWriter(config.Conf.Logfile)
-	if err == nil {
-		logrus.SetLevel(logrus.InfoLevel)
-		logrus.SetOutput(output)
-	} else {
-		logrus.Error(err)
+	db, err := gorm.Open("mysql", "root:123lmqde@tcp(47.52.22.55:3306)/i_blog?charset=utf8mb4&parseTime=True&loc=Local")
+	if err != nil {
+		return
 	}
+	db.SingularTable(true) //全局禁用表名复数形式 true : User --> user
+
+	//db.AutoMigrate(&models.User{})
+
+	//insert
+	user := models.User{Name: "曹丕", Age: 30, Birthday: time.Now()}
+	fmt.Println(db.NewRecord(user))
+	db.Create(&user)
+	fmt.Println(db.NewRecord(user))
+
+	//user := models.User{}
+	//db.First(&user)
+	//db.Last(&user)
+	//fmt.Println(user)
+
+	//users 是 切片 类型是models.User
+	//var users []models.User
+	//db.Find(&users)
+	//fmt.Println(users)
+	//fmt.Println(users[1].CreatedAt)
+
+	defer db.Close()
 }
