@@ -43,6 +43,8 @@ func main() {
 
 	app.Get("/profile/{username:string}", profileByUsername)
 
+	app.Get("/map", mapTest)
+
 	//Run
 	app.Run(iris.Addr(":8080"), iris.WithCharset("UTF-8"))
 
@@ -71,4 +73,13 @@ func profileByUsername(ctx iris.Context) {
 	username := ctx.Params().Get("username")
 	ctx.ViewData("Username", username)
 	ctx.View("user/profile.html")
+}
+
+func mapTest(ctx iris.Context) {
+	ctx.ViewData("", map[string]interface{}{
+		"Title":   "Test Page",
+		"Message": "Welcome,you see  Map Data",
+		"Age":     110,
+	})
+	ctx.View("user/map.html")
 }
