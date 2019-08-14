@@ -41,6 +41,8 @@ func main() {
 		userRoute.Get("/{name:string}/{city:string}", getUserByName)
 	}
 
+	app.Get("/profile/{username:string}", profileByUsername)
+
 	//Run
 	app.Run(iris.Addr(":8080"), iris.WithCharset("UTF-8"))
 
@@ -63,4 +65,10 @@ func getUserByName(ctx iris.Context) {
 	//age := ctx.Params().Values().GetInt("age")
 	user := User{Username: name, City: city}
 	ctx.JSON(user)
+}
+
+func profileByUsername(ctx iris.Context) {
+	username := ctx.Params().Get("username")
+	ctx.ViewData("Username", username)
+	ctx.View("user/profile.html")
 }
