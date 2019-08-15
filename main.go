@@ -50,8 +50,11 @@ func main() {
 	db.Find(&users, models.User{Age: 55})
 	db.Find(&users, map[string]interface{}{"age": 60})
 
+
+
 	fmt.Println(user)
 	fmt.Println(users)
+
 
 	defer db.Close()
 }
