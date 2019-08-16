@@ -1,27 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"hiris/app/models"
-	//"time"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/middleware/logger"
+	"github.com/kataras/iris/middleware/recover"
+	"hiris/app/http/models"
 )
 
 var users []models.User
 var user models.User
 
 func init() {
-
+	initDB() //初始化db
 }
 func main() {
-	db, err := gorm.Open("mysql", "root:123lmqde@tcp(47.52.22.55:3306)/i_blog?charset=utf8mb4&parseTime=True&loc=Local")
-	if err != nil {
-		return
-	}
-	db.SingularTable(true) //全局禁用表名复数形式 true : User --> user
-
-	//db.AutoMigrate(&models.User{})
 
 	//insert
 	//user := models.User{Name: "司马昭", Age: 35, Birthday: time.Now()}
@@ -71,8 +64,24 @@ func main() {
 
 	//===========带内联条件的查询
 
-	fmt.Println(user)
-	fmt.Println(users)
+	//fmt.Println(user)
+	//fmt.Println(users)
 
-	defer db.Close()
+	app := iris.New()
+	app.Logger().SetLevel("debug")
+	app.Use(recover.New())
+	app.Use(logger.New())
+
+	app.Get("/", func(ctx iris.Context) {
+		ctx.HTML("<b>Hello iris</b>")
+	})
+	//config := iris.TOML("./config/iris.tml")
+	//fmt.Println(config.Other["MyServerName"])
+	app.Run(iris.Addr(":8080"), iris.WithConfiguration(iris.TOML("./config/iris.tml")))
+
+}
+
+func initDB() {
+	//连接数据库
+	models.ConnectDB()
 }
