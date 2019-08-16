@@ -2,8 +2,11 @@ package app
 
 import (
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
 	"strings"
+	"syscall"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
@@ -35,4 +38,14 @@ func InitIris() {
 		m.Party("/user").Handle(new(admin.UserController))
 	})
 	server := &http.Server{Addr: ":8080"}
+	handleSignal(server)
+}
+
+func handleSignal(server *http.Server) {
+	c := make(chan os.Signal)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
+	go func() {
+		s := <-c
+		logrus.Infof("got signal [%s],exiting now", s)
+	}()
 }
