@@ -6,14 +6,15 @@ import (
 	"hiris/app/http/models"
 )
 
-var users []models.User
-var user models.User
+//var users []models.User
+//var user models.User
 
 func init() {
 	initDB() //初始化db
 }
 func main() {
 	app.InitIris()
+	initDB()
 }
 
 func initDB() {

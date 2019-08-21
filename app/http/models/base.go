@@ -6,12 +6,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var db *gorm.DB
+var err error
+
+//打开数据库
 func ConnectDB() *gorm.DB {
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return "" + defaultTableName
 	}
 
-	db, err := gorm.Open("mysql", "root:123lmqde@tcp(47.52.22.55:3306)/i_blog?charset=utf8mb4&parseTime=True&loc=Local")
+	db, err = gorm.Open("mysql", "root:123lmqde@tcp(47.52.22.55:3306)/i_blog?charset=utf8mb4&parseTime=True&loc=Local")
 	if err != nil {
 		log.Errorf("open db failed %s", err.Error())
 	}
@@ -25,4 +29,14 @@ func ConnectDB() *gorm.DB {
 	//db.AutoMigrate(&models.User{})
 
 	return db
+}
+
+//关闭数据库
+func CloseDB() {
+	if db == nil {
+		return
+	}
+	if err := db.Close(); err != nil {
+		log.Errorf("Disconnect from database failed :%s", err.Error())
+	}
 }
