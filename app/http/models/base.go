@@ -11,6 +11,9 @@ var err error
 
 //打开数据库
 func ConnectDB() *gorm.DB {
+	if db != nil {
+		return db
+	}
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return "" + defaultTableName
 	}

@@ -1,20 +1,22 @@
 package admin
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
-	"hiris/app/http/models"
 	//"github.com/kataras/iris/mvc"
+	"hiris/app/http/models"
 	//"strconv"
 )
 
 var (
-	db   *gorm.DB
 	user models.User
 )
+var db = models.ConnectDB()
 
 type UserController struct {
 	Ctx iris.Context
+}
+
+type JsonResult struct {
 }
 
 // admin/user/id
@@ -29,7 +31,11 @@ func (c *UserController) GetUserinfo() string {
 	return "user info method"
 }
 
+// admin/user/haha
 func (c *UserController) GetHaha() string {
-	db.First(&user)
+	//c.Ctx.ReadJSON()
+	user.ID = 6
+	db.Find(&user)
 	return user.Name
+	//return "====" +strconv.Itoa(user.ID) + "====" + "===="
 }
