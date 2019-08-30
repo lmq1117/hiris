@@ -42,6 +42,21 @@ func main() {
 		ctx.Writef("User ID: %d", userID)
 	})
 
+	app.Handle("GET", "/contact", func(ctx iris.Context) {
+		ctx.HTML("<h1>Hello from /contact </h1>")
+	})
+
+	app.Get("/method", handler)
+	app.Post("/method", handler)
+	app.Put("/method", handler)
+	app.Delete("/method", handler)
+	app.Options("/method", handler)
+	app.Trace("/method", handler)
+	app.Connect("/method", handler)
+	app.Head("/method", handler)
+	app.Patch("/method", handler)
+	app.Any("/methodany", handler)
+
 	//区分路由路径结尾是否带 /
 	// http://localhost:8080/user/1/ Result:Not Found
 	// http://localhost:8080/user/1 Result:User ID: 1
@@ -52,6 +67,10 @@ func main() {
 }
 
 func myMiddleware(ctx iris.Context) {
-	ctx.Application().Logger().Infof("Runs before %s", ctx.Path())
+	ctx.Application().Logger().Infof("Runs before %s, method %s\n", ctx.Path(), ctx.Method())
 	ctx.Next()
+}
+
+func handler(ctx iris.Context) {
+	ctx.Writef("Hello from method %s and path %s\n", ctx.Method(), ctx.Path())
 }
