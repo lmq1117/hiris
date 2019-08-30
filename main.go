@@ -42,7 +42,13 @@ func main() {
 		ctx.Writef("User ID: %d", userID)
 	})
 
-	app.Run(iris.Addr(":8080"))
+	//区分路由路径结尾是否带 /
+	// http://localhost:8080/user/1/ Result:Not Found
+	// http://localhost:8080/user/1 Result:User ID: 1
+	//app.Run(iris.Addr(":8080"),iris.WithoutPathCorrection)
+
+	//不区分路由路径结尾是否带 /
+	app.Run(iris.Addr(":8080"), iris.WithoutPathCorrectionRedirection)
 }
 
 func myMiddleware(ctx iris.Context) {
