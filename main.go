@@ -42,6 +42,7 @@ func main() {
 		ctx.Writef("User ID: %d", userID)
 	})
 
+	//routing.api
 	app.Handle("GET", "/contact", func(ctx iris.Context) {
 		ctx.HTML("<h1>Hello from /contact </h1>")
 	})
@@ -56,6 +57,34 @@ func main() {
 	app.Head("/method", handler)
 	app.Patch("/method", handler)
 	app.Any("/methodany", handler)
+
+	//routing.offlineRoute
+	//None 从外部隐藏路由，可以通过Context.Exec方法从handle调用
+	none := app.None("/invisible/{username}", func(ctx iris.Context) {
+		ctx.Writef("Hello %s with method:%s", ctx.Params().Get("username"), ctx.Method())
+		if from := ctx.Values().GetString("from"); from != "" {
+			ctx.Writef("\nI see that you're coming from %s", from)
+		}
+	})
+
+	app.Get("/change", func(ctx iris.Context) {
+		if none.IsOnline() {
+			none.Method = iris.MethodNone
+		} else {
+			none.Method = iris.MethodGet
+		}
+		app.RefreshRouter()
+	})
+
+	app.Get("/execute", func(ctx iris.Context) {
+		if !none.IsOnline() {
+			ctx.Values().Set("from", "/execute with offline access")
+			ctx.Exec("NONE", "/invisible/iris")
+			return
+		}
+		ctx.Values().Set("from", "/execute")
+		ctx.Exec("GET", "/invisible/iris")
+	})
 
 	//区分路由路径结尾是否带 /
 	// http://localhost:8080/user/1/ Result:Not Found
