@@ -86,6 +86,28 @@ func main() {
 		ctx.Exec("GET", "/invisible/iris")
 	})
 
+	//路由分组方式一 groupingRoutes
+	users := app.Party("/users", myMiddleware)
+	{
+		users.Get("/{id:uint64}/profile", func(ctx iris.Context) {
+			ctx.Writef("<h1>Hello from /users/%s/profile </h1>", ctx.Params().Get("id"))
+		})
+		users.Get("/message/{id:uint64}", func(ctx iris.Context) {
+			ctx.Writef("<h1>Hello from /users/message/%s </h1>", ctx.Params().Get("id"))
+		})
+	}
+
+	//路由分组方式二 PartyFunc
+	app.PartyFunc("/partyfunc", func(p iris.Party) {
+		p.Use(myMiddleware)
+		p.Get("/{id:uint64}/profile", func(ctx iris.Context) {
+			ctx.Writef("<h1>Hello from /partyfunc/%s/profile </h1>", ctx.Params().Get("id"))
+		})
+		p.Get("/message/{id:uint64}", func(ctx iris.Context) {
+			ctx.Writef("<h1>Hello from /partyfunc/message/%s </h1>", ctx.Params().Get("id"))
+		})
+	})
+
 	//区分路由路径结尾是否带 /
 	// http://localhost:8080/user/1/ Result:Not Found
 	// http://localhost:8080/user/1 Result:User ID: 1
