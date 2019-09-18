@@ -5,6 +5,7 @@ import (
 	//"hiris/app"
 	//"hiris/app/http/models"
 	"github.com/kataras/iris"
+	"regexp"
 )
 
 //var users []models.User
@@ -112,6 +113,44 @@ func main() {
 	// http://localhost:8080/user/1/ Result:Not Found
 	// http://localhost:8080/user/1 Result:User ID: 1
 	//app.Run(iris.Addr(":8080"),iris.WithoutPathCorrection)
+
+	/*
+		|--------------------------------------------------------------------------
+		| Route path paramter types
+		|--------------------------------------------------------------------------
+		|
+		| 1. path
+		| 2. string
+		| 3. int min(5)
+		|
+	*/
+	//匹配 /assets/*/* eg /assets/aaa/bbb/ccc
+	app.Get("/assets/{asset:path}", func(ctx iris.Context) {
+		ctx.Writef(ctx.Path() + "|参数值:" + ctx.Params().GetString("asset") + "\n" + ctx.Params().Get("asset"))
+	})
+
+	app.Get("/profile/me", func(ctx iris.Context) {
+		ctx.Writef(ctx.Path())
+	})
+
+	app.Get("/profile/{username:string}", func(ctx iris.Context) {
+		ctx.Writef(ctx.Path() + "|参数值:" + ctx.Params().GetString("username"))
+	})
+
+	app.Get("/u/{userid:int min(5)}", func(ctx iris.Context) {
+		ctx.Writef(ctx.Path() + "|参数值:" + ctx.Params().GetString("userid"))
+	})
+
+	app.Get("alp/{name:alphabetical max(5)}", func(ctx iris.Context) {
+		ctx.Writef(ctx.Path() + "|参数值:" + ctx.Params().Get("name"))
+	})
+	//自定义路由参数验证规则
+	latLonExpr := "^-?[0-9]{1,2}(?:\\.[0-9]{1,4})?$"
+	latLonRegex, _ := regexp.Compile(latLonExpr)
+	app.Macros().Get("string").RegisterFunc("coordinate", latLonRegex.MatchString)
+	app.Get("/coordinates/{lat:string coordinate()}/{lon:string coordinate()}", func(ctx iris.Context) {
+		ctx.Writef("Lat:%s|Lon:%s", ctx.Params().Get("lat"), ctx.Params().Get("lon"))
+	})
 
 	//不区分路由路径结尾是否带 /
 	app.Run(iris.Addr(":8080"), iris.WithoutPathCorrectionRedirection)
