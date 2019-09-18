@@ -145,11 +145,39 @@ func main() {
 		ctx.Writef(ctx.Path() + "|参数值:" + ctx.Params().Get("name"))
 	})
 	//自定义路由参数验证规则
+	//正数位1~2位，可选小数位1~4位
 	latLonExpr := "^-?[0-9]{1,2}(?:\\.[0-9]{1,4})?$"
 	latLonRegex, _ := regexp.Compile(latLonExpr)
 	app.Macros().Get("string").RegisterFunc("coordinate", latLonRegex.MatchString)
 	app.Get("/coordinates/{lat:string coordinate()}/{lon:string coordinate()}", func(ctx iris.Context) {
 		ctx.Writef("Lat:%s|Lon:%s", ctx.Params().Get("lat"), ctx.Params().Get("lon"))
+	})
+
+	//自定义路由参数验证规则 接收2个参数
+	app.Macros().Get("string").RegisterFunc("range", func(minLength, maxLength int) func(string) bool {
+		return func(paramValue string) bool {
+			return len(paramValue) >= minLength && len(paramValue) <= maxLength
+		}
+	})
+	//else 后边是http状态码
+	app.Get("/limitchar/{name:string range(1,5) else 404}", func(ctx iris.Context) {
+		ctx.Writef("Hello %s | the name should be between 1 and 5 characters length otherwise this handler will not be executed", ctx.Params().Get("name"))
+	})
+
+	//自定义路由参数验证规则 接收一个切片
+	app.Macros().Get("string").RegisterFunc("has", func(validNames []string) func(string) bool {
+		return func(paramValue string) bool {
+			for _, validName := range validNames {
+				if validName == paramValue {
+					return true
+				}
+			}
+			return false
+		}
+	})
+	app.Get("/static_validation/{name:string has([lucy,lili]) else 404}", func(ctx iris.Context) {
+		name := ctx.Params().Get("name")
+		ctx.Writef(`Hello %s | the name should be "lucy" or "lili" otherwise this handler will not be executed`, name)
 	})
 
 	//不区分路由路径结尾是否带 /
