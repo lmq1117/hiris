@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/kataras/iris/_examples/mvc/login/datamodels"
+	"github.com/lmq1117/hiris/datamodels"
 )
 
 // Query represents the visitor and action queries.

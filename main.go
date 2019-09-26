@@ -5,11 +5,11 @@ package main
 import (
 	"time"
 
-	"github.com/kataras/iris/_examples/mvc/login/datasource"
-	"github.com/kataras/iris/_examples/mvc/login/repositories"
-	"github.com/kataras/iris/_examples/mvc/login/services"
-	"github.com/kataras/iris/_examples/mvc/login/web/controllers"
-	"github.com/kataras/iris/_examples/mvc/login/web/middleware"
+	"github.com/lmq1117/hiris/datasource"
+	"github.com/lmq1117/hiris/repositories"
+	"github.com/lmq1117/hiris/services"
+	"github.com/lmq1117/hiris/web/controllers"
+	"github.com/lmq1117/hiris/web/middleware"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
