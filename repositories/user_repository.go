@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/lmq1117/hiris/datamodels"
+	"hiris/datamodels"
 )
 
 // Query represents the visitor and action queries.

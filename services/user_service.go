@@ -3,8 +3,8 @@ package services
 import (
 	"errors"
 
-	"github.com/lmq1117/hiris/datamodels"
-	"github.com/lmq1117/hiris/repositories"
+	"hiris/datamodels"
+	"hiris/repositories"
 )
 
 // UserService handles CRUID operations of a user datamodel,

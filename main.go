@@ -5,11 +5,11 @@ package main
 import (
 	"time"
 
-	"github.com/lmq1117/hiris/datasource"
-	"github.com/lmq1117/hiris/repositories"
-	"github.com/lmq1117/hiris/services"
-	"github.com/lmq1117/hiris/web/controllers"
-	"github.com/lmq1117/hiris/web/middleware"
+	"hiris/datasource"
+	"hiris/repositories"
+	"hiris/services"
+	"hiris/web/controllers"
+	"hiris/web/middleware"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
@@ -78,7 +78,7 @@ func main() {
 	// basic auth: "admin", "password", see "./middleware/basicauth.go" source file.
 	app.Run(
 		// Starts the web server at localhost:8080
-		iris.Addr("localhost:8080"),
+		iris.Addr(":8080"),
 		// Ignores err server closed log when CTRL/CMD+C pressed.
 		iris.WithoutServerError(iris.ErrServerClosed),
 		// Enables faster json serialization and more.

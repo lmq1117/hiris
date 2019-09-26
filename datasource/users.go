@@ -5,7 +5,7 @@ package datasource
 import (
 	"errors"
 
-	"github.com/lmq1117/hiris/datamodels"
+	"hiris/datamodels"
 )
 
 // Engine is from where to fetch the data, in this case the users.

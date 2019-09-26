@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/lmq1117/hiris/datamodels"
-	"github.com/lmq1117/hiris/services"
+	"hiris/datamodels"
+	"hiris/services"
 
 	"github.com/kataras/iris"
 )
