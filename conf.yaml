@@ -1,4 +1,0 @@
-Env: dev #环境：生产prod 开发测试dev
-MySqlUrl: root:123lmqde@tcp(47.52.22.55:3306)/i_blog?charset=utf8mb4&parseTime=True&loc=Local #数据库连接地址
-ShowSql: false # 是否打印sql
-LogFile: D:\Go\hiris\blog.log
