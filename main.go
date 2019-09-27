@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"hiris/models"
 )
 
 func main() {
@@ -10,5 +11,9 @@ func main() {
 	if err != nil {
 
 	}
+	//创建users表
+	//user := models.User{}
+	db.CreateTable(&models.User{})
+
 	defer db.Close()
 }
