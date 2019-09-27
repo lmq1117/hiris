@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"hiris/models"
@@ -12,8 +13,17 @@ func main() {
 
 	}
 	//创建users表
-	//user := models.User{}
-	db.CreateTable(&models.User{})
+	//user := models.User{Name: "Jinzhu", Age: 18, Birthday: time.Now()}
+	//db.CreateTable(&models.User{})
+	//db.NewRecord(user)
+
+	//db.Create(&user)
+	//fmt.Println(time.Now().Unix())
+
+	user := models.User{}
+	db.First(&user)
+
+	fmt.Println(user.Birthday)
 
 	defer db.Close()
 }

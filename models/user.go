@@ -8,15 +8,22 @@ import (
 
 type User struct {
 	gorm.Model
-	Name         string
-	Age          sql.NullInt64
-	Birthday     *time.Time
-	Email        string  `gorm:"type:varchar(100);unique_index"`
-	Role         string  `gorm:"size:255"`        // 设置字段大小为255
-	MemberNumber *string `gorm:"unique;not null"` // 设置会员号（member number）唯一并且不为空
-	Num          int     `gorm:"AUTO_INCREMENT"`  // 设置 num 为自增类型
-	Address      string  `gorm:"index:addr"`      // 给address字段创建名为addr的索引
-	IgnoreMe     int     `gorm:"-"`               // 忽略本字段
+	Birthday time.Time
+	Age      int
+	Name     string `gorm:"size:255"`       // string默认长度为255, 使用这种tag重设。
+	Num      int    `gorm:"AUTO_INCREMENT"` // 自增
+
+	//CreditCard        CreditCard      // One-To-One (拥有一个 - CreditCard表的UserID作外键)
+	//Emails            []Email         // One-To-Many (拥有多个 - Email表的UserID作外键)
+
+	//BillingAddress    Address         // One-To-One (属于 - 本表的BillingAddressID作外键)
+	BillingAddressID sql.NullInt64
+
+	//ShippingAddress   Address         // One-To-One (属于 - 本表的ShippingAddressID作外键)
+	ShippingAddressID int
+
+	IgnoreMe int `gorm:"-"` // 忽略这个字段
+	//Languages         []Language `gorm:"many2many:user_languages;"` // Many-To-Many , 'user_languages'是连接表
 }
 
 func (u User) TableName() string {
