@@ -2,28 +2,38 @@ package main
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"hiris/models"
+	"runtime"
+	"time"
 )
 
 func main() {
-	db, err := gorm.Open("mysql", "root:123456@(192.168.100.133)/hiris?charset=utf8mb4&parseTime=True&loc=Local")
-	if err != nil {
-
+	// 启动时间
+	start := time.Now()
+	// 最大 CPU 核心数
+	cpus := runtime.NumCPU()
+	runtime.GOMAXPROCS(cpus)
+	chs := make([]chan int, cpus)
+	for i := 0; i < len(chs); i++ {
+		chs[i] = make(chan int, 1)
+		go sum(i, chs[i])
 	}
-	//创建users表
-	//user := models.User{Name: "Jinzhu", Age: 18, Birthday: time.Now()}
-	//db.CreateTable(&models.User{})
-	//db.NewRecord(user)
+	sum := 0
+	for _, ch := range chs {
+		res := <-ch
+		sum += res
+	}
+	// 结束时间
+	end := time.Now()
+	// 打印耗时
+	fmt.Printf("最终运算结果: %d, 执行耗时(s): %f\n", sum, end.Sub(start).Seconds())
+}
 
-	//db.Create(&user)
-	//fmt.Println(time.Now().Unix())
-
-	user := models.User{}
-	db.First(&user)
-
-	fmt.Println(user.Birthday)
-
-	defer db.Close()
+func sum(seq int, ch chan int) {
+	defer close(ch)
+	sum := 0
+	for i := 1; i <= 10000000000; i++ {
+		sum += i
+	}
+	fmt.Printf("子协程%d运算结果:%d\n", seq, sum)
+	ch <- sum
 }
