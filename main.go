@@ -1,9 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
-	add(1, 2)
+	go add(1, 2)
+	time.Sleep(1e9)
 }
 
 func add(a, b int) {
