@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
 func main() {
-	go add(1, 2)
+	for i := 0; i < 10; i++ {
+		add(1, i)
+	}
 	time.Sleep(1e9)
-	fmt.Println(strings.Join([]string{"aa", "bb"}, "--"))
 }
 
 func add(a, b int) {
-	fmt.Printf("%d + %d = %d\n", a, b, a+b)
+	time.Sleep(3e9)
+	c := a + b
+	fmt.Printf("%d + %d = %d\n", a, b, c)
+
 }
